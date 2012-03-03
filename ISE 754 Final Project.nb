@@ -1,0 +1,1281 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[     48195,       1272]
+NotebookOptionsPosition[     43562,       1134]
+NotebookOutlinePosition[     44048,       1155]
+CellTagsIndexPosition[     44005,       1152]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[StyleBox["Press Evalutation > Evaluate Cells to run.",
+ FontFamily->"Stone Sans ITC TT-Semi",
+ FontSize->14,
+ FontColor->RGBColor[0, 1, 1],
+ Background->RGBColor[1, 1, 0]]], "Text",
+ CellChangeTimes->{{3.501270972635483*^9, 3.501270986232545*^9}},
+ FontColor->RGBColor[0, 1, 0]],
+
+Cell[BoxData[
+ RowBox[{"Clear", "[", "\"\<Global`*\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.5000476559418592`*^9, 3.5000476608141003`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Import Data", "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500064384470439*^9, 3.500064386243651*^9}, 
+   3.50126713086493*^9, 3.5397878819001017`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"data", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+    "\"\<http://www.census.gov/tiger/tms/gazetteer/places2k.txt\>\"", ",", 
+     RowBox[{"{", 
+      RowBox[{"\"\<Text\>\"", ",", "\"\<Lines\>\""}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.4998748364196157`*^9, 3.499874911574925*^9}, {
+   3.499874981418223*^9, 3.499875001864519*^9}, {3.49987548369965*^9, 
+   3.49987548395583*^9}, {3.499875557974148*^9, 3.4998755582433043`*^9}, 
+   3.499875588833143*^9, {3.499875704460272*^9, 3.4998757352336903`*^9}, 
+   3.500038444292119*^9, 3.5012671308650503`*^9, 3.53978788190027*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"USMAP", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+    "\"\<http://www.census.gov/geo/cob/bdy/st/st00shp/st99_d00_shp.zip\>\"", 
+     ",", 
+     RowBox[{"{", "\"\<SHP\>\"", "}"}]}], "]"}]}], ";"}]], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{3.501267130865127*^9, 3.539787881900572*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"zipdata", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+    "\"\<http://www.census.gov/ftp/pub/tiger/tms/gazetteer/zcta5.txt\>\"", 
+     ",", 
+     RowBox[{"{", 
+      RowBox[{"\"\<Text\>\"", ",", "\"\<Lines\>\""}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.5000600440698833`*^9, 3.5000600670769587`*^9}, {
+   3.501265055003703*^9, 3.5012650620933037`*^9}, 3.501267130865281*^9, 
+   3.539787881902322*^9, {3.539787924443974*^9, 3.539787925009693*^9}, {
+   3.539788011535618*^9, 3.539788012047696*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Process Data", "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.5000643915724297`*^9, 3.500064393900674*^9}, 
+   3.501267130865356*^9}],
+
+Cell["Process census bureau data.", "Text",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.5000384522061567`*^9, 3.5000384780140057`*^9}, {
+   3.501265189504808*^9, 3.501265191000608*^9}, 3.5012671308654213`*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"GetRelevantData", "[", "data_", "]"}], ":=", 
+  RowBox[{"Map", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"StringTake", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"1", ",", "2"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"10", ",", "73"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"74", ",", "82"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"144", ",", "153"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"154", ",", "164"}], "}"}]}], "}"}]}], "]"}], "&"}], ",", 
+    "data"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"FixNames", "[", "rawname_", "]"}], ":=", 
+  RowBox[{"StringReplace", "[", 
+   RowBox[{
+    RowBox[{"StringJoin", "[", 
+     RowBox[{"Riffle", "[", 
+      RowBox[{
+       RowBox[{"Drop", "[", 
+        RowBox[{
+         RowBox[{"StringSplit", "[", "rawname", "]"}], ",", 
+         RowBox[{"-", "1"}]}], "]"}], ",", "\"\< \>\""}], "]"}], "]"}], ",", 
+    RowBox[{"\"\< zona\>\"", "\[Rule]", "\"\<\>\""}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"ProcessEntry", "[", "entry_", "]"}], ":=", "\[IndentingNewLine]", 
+   
+   RowBox[{"ReplacePart", "[", 
+    RowBox[{"entry", ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"2", "\[Rule]", 
+        RowBox[{"FixNames", "[", 
+         RowBox[{"entry", "[", 
+          RowBox[{"[", "2", "]"}], "]"}], "]"}]}], ",", 
+       RowBox[{"3", "\[Rule]", 
+        RowBox[{"ToExpression", "[", 
+         RowBox[{"entry", "[", 
+          RowBox[{"[", "3", "]"}], "]"}], "]"}]}], ",", 
+       RowBox[{"5", "\[Rule]", 
+        RowBox[{"ToExpression", "[", 
+         RowBox[{"entry", "[", 
+          RowBox[{"[", "4", "]"}], "]"}], "]"}]}], ",", 
+       RowBox[{"4", "\[Rule]", 
+        RowBox[{"ToExpression", "[", 
+         RowBox[{"entry", "[", 
+          RowBox[{"[", "5", "]"}], "]"}], "]"}]}]}], "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"CityDat", "=", 
+    RowBox[{"ProcessEntry", "/@", 
+     RowBox[{"GetRelevantData", "[", "data", "]"}]}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"GetRelevantData2", "[", "data_", "]"}], ":=", 
+  RowBox[{"Map", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"StringTake", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"1", ",", "2"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"3", ",", "8"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"67", ",", "75"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"137", ",", "146"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"147", ",", "157"}], "}"}]}], "}"}]}], "]"}], "&"}], ",", 
+    "data"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"relevant", "=", 
+   RowBox[{"GetRelevantData2", "[", "zipdata", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ZipDat", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ReplacePart", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"2", "\[Rule]", 
+          RowBox[{"ToExpression", "[", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], "]"}]}], ",", 
+         RowBox[{"3", "\[Rule]", 
+          RowBox[{"ToExpression", "[", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], "]"}]}], ",", 
+         RowBox[{"4", "\[Rule]", 
+          RowBox[{"ToExpression", "[", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", "5", "]"}], "]"}], "]"}]}], ",", 
+         RowBox[{"5", "\[Rule]", 
+          RowBox[{"ToExpression", "[", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", "4", "]"}], "]"}], "]"}]}]}], "}"}]}], "]"}], "&"}], 
+    "/@", "relevant"}]}], ";"}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.499875560779842*^9, 3.4998755652660837`*^9}, {
+   3.499875737985815*^9, 3.49987588310843*^9}, {3.499875948638145*^9, 
+   3.49987599712704*^9}, {3.499876193611163*^9, 3.4998762284743967`*^9}, {
+   3.499876287392333*^9, 3.49987629221202*^9}, {3.499876488530541*^9, 
+   3.499876494815318*^9}, {3.499876575209464*^9, 3.49987658435931*^9}, 
+   3.499876634249447*^9, {3.499876956781382*^9, 3.499876960636259*^9}, {
+   3.499877245298498*^9, 3.499877274141138*^9}, {3.499877308554779*^9, 
+   3.499877313294581*^9}, 3.499877355873056*^9, {3.4998774988843107`*^9, 
+   3.499877507642208*^9}, {3.4998778283003187`*^9, 3.499877846451425*^9}, {
+   3.499877910528968*^9, 3.4998779143410873`*^9}, {3.499879225342115*^9, 
+   3.499879226055794*^9}, 3.499883395828063*^9, {3.500038435142724*^9, 
+   3.500038448274961*^9}, {3.500060136231366*^9, 3.500060159142681*^9}, {
+   3.501267017329818*^9, 3.5012670476657877`*^9}, 3.501267130865492*^9, {
+   3.5012672978511353`*^9, 3.5012672996765013`*^9}, {3.501271018130864*^9, 
+   3.501271030039427*^9}, {3.501271064181329*^9, 3.501271081005103*^9}}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Remove", "[", "zipdata", "]"}], ";", 
+  RowBox[{"Remove", "[", "data", "]"}], ";", 
+  RowBox[{"Remove", "[", "relevant", "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.501271068160656*^9, 3.501271082287035*^9}}],
+
+Cell["The total number of zip codes is:", "Text",
+ CellChangeTimes->{{3.501267514509906*^9, 3.501267525267658*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "ZipDat", "]"}]], "Input",
+ CellChangeTimes->{{3.501267502597344*^9, 3.5012675056297493`*^9}}],
+
+Cell["The total number of cities is:", "Text",
+ CellChangeTimes->{{3.501267528283416*^9, 3.501267534099205*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "CityDat", "]"}]], "Input",
+ CellChangeTimes->{{3.501267507064128*^9, 3.5012675103173227`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Define Functions for Data Retrieval", "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.50006440954738*^9, 3.500064418227072*^9}, {
+   3.501017062353786*^9, 3.501017065104239*^9}, 3.501267209149536*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"StateSelect", "[", 
+    RowBox[{"state_String", ",", 
+     RowBox[{"data_:", "ZipDat"}]}], "]"}], ":=", 
+   RowBox[{"Cases", "[", 
+    RowBox[{"data", ",", 
+     RowBox[{"{", 
+      RowBox[{"state", ",", "___"}], "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"StateSelect", "[", 
+    RowBox[{"state_List", ",", 
+     RowBox[{"data_:", "ZipDat"}]}], "]"}], ":=", 
+   RowBox[{"Flatten", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"StateSelect", "[", 
+        RowBox[{"#", ",", "data"}], "]"}], "&"}], "/@", "state"}], ",", "1"}],
+     "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"PopulationRange", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"pop1_", ",", "pop2_"}], "}"}], ",", 
+     RowBox[{"data_:", "CityDat"}]}], "]"}], ":=", 
+   RowBox[{"Select", "[", 
+    RowBox[{"data", ",", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"pop1", "<=", 
+        RowBox[{"#", "[", 
+         RowBox[{"[", "3", "]"}], "]"}], "\[LessEqual]", "pop2"}], ")"}], 
+      "&"}]}], "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"CitySelect", "[", 
+   RowBox[{"{", 
+    RowBox[{"city_String", ",", "state_String"}], "}"}], "]"}], ":=", 
+  RowBox[{"Flatten", "[", 
+   RowBox[{"Cases", "[", 
+    RowBox[{"CityDat", ",", 
+     RowBox[{"{", 
+      RowBox[{"state", ",", "city", ",", "___"}], "}"}]}], "]"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"CitySelect", "[", 
+    RowBox[{"city_String", ",", "state_String"}], "]"}], ":=", 
+   RowBox[{"CitySelect", "[", 
+    RowBox[{"{", 
+     RowBox[{"city", ",", "state"}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"CitySelect", "[", "x_List", "]"}], ":=", 
+    RowBox[{"Partition", "[", 
+     RowBox[{
+      RowBox[{"Flatten", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"CitySelect", "[", "#", "]"}], "&"}], "/@", "x"}], "]"}], 
+      ",", "5"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DataToXY", "[", 
+    RowBox[{"{", 
+     RowBox[{"_", ",", "_", ",", "_", ",", "x_Real", ",", "y_Real"}], "}"}], 
+    "]"}], ":=", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", "y"}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DataToXY", "[", "data_List", "]"}], ":=", 
+   RowBox[{"DataToXY", "/@", "data"}]}], ";"}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.499879234768099*^9, 3.4998792811480703`*^9}, {
+   3.4998794285623426`*^9, 3.499879456282526*^9}, {3.499879495215755*^9, 
+   3.499879499948536*^9}, {3.499879569620933*^9, 3.499879577716652*^9}, {
+   3.499880015628117*^9, 3.499880159042664*^9}, {3.4998802171820183`*^9, 
+   3.499880246580174*^9}, {3.4998803525101347`*^9, 3.499880412637905*^9}, {
+   3.499880935335268*^9, 3.49988093781553*^9}, {3.499881752319006*^9, 
+   3.499881864617331*^9}, {3.499881919194948*^9, 3.499881926123661*^9}, {
+   3.499882169559164*^9, 3.4998822550641127`*^9}, {3.499883345347437*^9, 
+   3.499883363362265*^9}, {3.499883395713842*^9, 3.4998835448611917`*^9}, {
+   3.499883596952396*^9, 3.499883732639731*^9}, {3.499883779191597*^9, 
+   3.499883783829648*^9}, {3.499883928347385*^9, 3.499883991702648*^9}, {
+   3.49988404328764*^9, 3.499884082671671*^9}, {3.499884130705805*^9, 
+   3.499884138432872*^9}, {3.500038490936657*^9, 3.5000385048306017`*^9}, 
+   3.500038702910595*^9, {3.500038734102352*^9, 3.500038755468709*^9}, {
+   3.500038802076426*^9, 3.50003882491453*^9}, {3.5000389553971653`*^9, 
+   3.50003904546096*^9}, {3.500039689729631*^9, 3.500039716002288*^9}, {
+   3.500039876587071*^9, 3.500039894352705*^9}, {3.5000479180864553`*^9, 
+   3.5000479184704103`*^9}, {3.500060772275736*^9, 3.50006080209232*^9}, {
+   3.5000609438431168`*^9, 3.500060951268854*^9}, {3.500060985936721*^9, 
+   3.500060987536151*^9}, {3.50006434481511*^9, 3.5000643504472218`*^9}, {
+   3.5000645278432083`*^9, 3.500064528049292*^9}, {3.500065113573237*^9, 
+   3.5000651167092*^9}, {3.500066552459276*^9, 3.500066561439023*^9}, 
+   3.501267209149673*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"CityToXY", "[", 
+   RowBox[{"city_String", ",", "state_String"}], "]"}], ":=", 
+  RowBox[{"DataToXY", "[", 
+   RowBox[{"CitySelect", "[", 
+    RowBox[{"city", ",", "state"}], "]"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"CityToXY", "[", 
+    RowBox[{"{", 
+     RowBox[{"city_String", ",", "state_String"}], "}"}], "]"}], ":=", 
+   RowBox[{"CityToXY", "[", 
+    RowBox[{"city", ",", "state"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"CityToXY", "[", "lis_List", "]"}], ":=", 
+   RowBox[{"CityToXY", "/@", "lis"}]}], ";"}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500065118223304*^9, 3.5000652038233557`*^9}, 
+   3.500066561470871*^9, 3.501267209149754*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"XYToCity", "[", 
+   RowBox[{"x_", ",", "y_"}], "]"}], ":=", 
+  RowBox[{"Nearest", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"DataToXY", "[", "CityDat", "]"}], "\[Rule]", "CityDat"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", "y"}], "}"}], ",", "1"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"XYToCity", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"x_", "?", "NumberQ"}], ",", 
+     RowBox[{"y_", "?", "NumberQ"}]}], "}"}], "]"}], ":=", 
+  RowBox[{"XYToCity", "[", 
+   RowBox[{"x", ",", "y"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"XYToCity", "[", "lis_List", "]"}], ":=", 
+  RowBox[{"XYToCity", "/@", "lis"}]}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500065748774941*^9, 3.5000658360644217`*^9}, {
+   3.5000662245372*^9, 3.50006624804589*^9}, {3.500066366026806*^9, 
+   3.5000663810425453`*^9}, {3.5000665419148073`*^9, 3.500066561520536*^9}, {
+   3.500066955889018*^9, 3.500067012376419*^9}, 3.501267209149835*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"SelectNeighboringZipCodes", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x_", "?", "NumberQ"}], ",", 
+       RowBox[{"y_", "?", "NumberQ"}]}], "}"}], ",", "dist_", ",", 
+     RowBox[{"data_:", "ZipDat"}]}], "]"}], ":=", 
+   RowBox[{"Select", "[", 
+    RowBox[{"data", ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Distance", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"#", "[", 
+           RowBox[{"[", 
+            RowBox[{"{", 
+             RowBox[{"4", ",", "5"}], "}"}], "]"}], "]"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"x", ",", "y"}], "}"}]}], "}"}], "]"}], "\[LessEqual]", 
+       "dist"}], "&"}]}], "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"SelectNeighboringCities", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"x_", "?", "NumberQ"}], ",", 
+       RowBox[{"y_", "?", "NumberQ"}]}], "}"}], ",", "dist_", ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"minpop_:", "0"}], ",", 
+       RowBox[{"maxpop_:", "\[Infinity]"}]}], "}"}]}], "]"}], ":=", 
+   RowBox[{"PopulationRange", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"minpop", ",", "maxpop"}], "}"}], ",", 
+     RowBox[{"SelectNeighboringZipCodes", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"x", ",", "y"}], "}"}], ",", "dist", ",", "CityDat"}], 
+      "]"}]}], "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"SelectNeighboringCities", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"x_", "?", "NumberQ"}], ",", 
+      RowBox[{"y_", "?", "NumberQ"}]}], "}"}], ",", "dist_", ",", 
+    RowBox[{"minpop_:", "0"}]}], "]"}], ":=", 
+  RowBox[{"PopulationRange", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"minpop", ",", "\[Infinity]"}], "}"}], ",", 
+    RowBox[{"SelectNeighboringZipCodes", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"x", ",", "y"}], "}"}], ",", "dist", ",", "CityDat"}], "]"}]}],
+    "]"}]}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500070952828915*^9, 3.5000711217774477`*^9}, {
+   3.500071894498047*^9, 3.5000719158873568`*^9}, {3.501017706770275*^9, 
+   3.50101774494983*^9}, {3.501017784206211*^9, 3.501017837197124*^9}, {
+   3.50101814070905*^9, 3.50101815890129*^9}, 3.501267209149918*^9, {
+   3.501268283056562*^9, 3.50126828373701*^9}, {3.501269362436049*^9, 
+   3.5012693983988247`*^9}, {3.501269537379973*^9, 3.501269542430915*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Great Circle Distance", "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10002.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500069907240327*^9, 3.5000699100949793`*^9}, {
+   3.500072029033352*^9, 3.500072029872819*^9}, 3.501267209149993*^9, 
+   3.5397879519062433`*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"Distance", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"lon1_", "?", "NumberQ"}], ",", 
+        RowBox[{"lat1_", "?", "NumberQ"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"lon2_", "?", "NumberQ"}], ",", 
+        RowBox[{"lat2_", "?", "NumberQ"}]}], "}"}]}], "}"}], "]"}], ":=", 
+   RowBox[{"Re", "[", 
+    RowBox[{"3956", " ", 
+     RowBox[{"ArcCos", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Sin", "[", 
+         RowBox[{"lat1", " ", "Degree"}], "]"}], 
+        RowBox[{"Sin", "[", 
+         RowBox[{"lat2", " ", "Degree"}], "]"}]}], "+", 
+       RowBox[{
+        RowBox[{"Cos", "[", 
+         RowBox[{"lat1", " ", "Degree"}], "]"}], 
+        RowBox[{"Cos", "[", 
+         RowBox[{"lat2", " ", "Degree"}], "]"}], 
+        RowBox[{"Cos", "[", 
+         RowBox[{
+          RowBox[{"lon1", " ", "Degree"}], "-", 
+          RowBox[{"lon2", " ", "Degree"}]}], "]"}]}]}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Distance", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"lon1_", "?", "NumberQ"}], ",", 
+      RowBox[{"lat1_", "?", "NumberQ"}]}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"lon2_", "?", "NumberQ"}], ",", 
+      RowBox[{"lat2_", "?", "NumberQ"}]}], "}"}]}], "]"}], ":=", 
+  RowBox[{"Distance", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"lon1", ",", "lat1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"lon2", ",", "lat2"}], "}"}]}], "}"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Distance", "[", 
+    RowBox[{"list1_", ",", "list2_"}], "]"}], ":=", 
+   RowBox[{"Outer", "[", 
+    RowBox[{"Distance", ",", "list1", ",", "list2", ",", "1"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Distance", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"lon1_", "?", "NumberQ"}], ",", 
+      RowBox[{"lat1_", "?", "NumberQ"}]}], "}"}], ",", "list2_"}], "]"}], ":=", 
+  RowBox[{"Distance", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"{", 
+      RowBox[{"lon1", ",", "lat1"}], "}"}], "}"}], ",", "list2"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Distance", "[", 
+   RowBox[{"list2_", ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"lon1_", "?", "NumberQ"}], ",", 
+      RowBox[{"lat1_", "?", "NumberQ"}]}], "}"}]}], "]"}], ":=", 
+  RowBox[{"Distance", "[", 
+   RowBox[{"list2", ",", 
+    RowBox[{"{", 
+     RowBox[{"{", 
+      RowBox[{"lon1", ",", "lat1"}], "}"}], "}"}]}], "]"}]}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10002.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500067529262608*^9, 3.500067688713299*^9}, {
+   3.500067726123066*^9, 3.500067752230332*^9}, {3.500068025659553*^9, 
+   3.5000680260605097`*^9}, {3.5000680855204487`*^9, 
+   3.5000680990642967`*^9}, {3.500068188667944*^9, 3.500068234055396*^9}, {
+   3.500068304829925*^9, 3.500068311829108*^9}, {3.500068612608176*^9, 
+   3.500068615581032*^9}, {3.500068671419812*^9, 3.500068679819071*^9}, {
+   3.50006941834096*^9, 3.50006952231772*^9}, {3.500069645439399*^9, 
+   3.500069647647978*^9}, {3.5000713132381563`*^9, 3.500071337974526*^9}, {
+   3.50007137288132*^9, 3.500071429887536*^9}, {3.5000714687604628`*^9, 
+   3.500071482556529*^9}, {3.500071543122512*^9, 3.500071549949891*^9}, {
+   3.5000718339777403`*^9, 3.500071888345042*^9}, {3.500072036379508*^9, 
+   3.500072037283457*^9}, {3.501019478818961*^9, 3.5010195027076693`*^9}, {
+   3.5012653633086576`*^9, 3.50126539666568*^9}, {3.501265520206705*^9, 
+   3.501265529700976*^9}, {3.5012655829814873`*^9, 3.50126560067962*^9}, {
+   3.5012656371767397`*^9, 3.5012656545213213`*^9}, {3.501265692806218*^9, 
+   3.501265845074348*^9}, {3.501265902521357*^9, 3.501265977334158*^9}, {
+   3.5012660459163733`*^9, 3.50126606019604*^9}, {3.501266168025968*^9, 
+   3.501266222669832*^9}, {3.501266482208765*^9, 3.501266483671628*^9}, {
+   3.5012665146466913`*^9, 3.5012665617252493`*^9}, 3.5012672091500683`*^9, {
+   3.501269599362834*^9, 3.5012696019329433`*^9}, {3.50126993233806*^9, 
+   3.501269932784004*^9}, {3.501270004175709*^9, 3.501270004429541*^9}, 
+   3.5397879519064217`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Define Plotting Functions", "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.500064426277233*^9, 3.500064431906354*^9}, 
+   3.5012672091502438`*^9}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"DRange", "[", 
+    RowBox[{"data_", ",", 
+     RowBox[{"\[Epsilon]_:", "1"}], ",", 
+     RowBox[{"\[Delta]_:", "1"}]}], "]"}], ":=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Min", "[", 
+         RowBox[{"data", "[", 
+          RowBox[{"[", 
+           RowBox[{"All", ",", "1"}], "]"}], "]"}], "]"}], "-", 
+        "\[Epsilon]"}], ",", 
+       RowBox[{
+        RowBox[{"Max", "[", 
+         RowBox[{"data", "[", 
+          RowBox[{"[", 
+           RowBox[{"All", ",", "1"}], "]"}], "]"}], "]"}], "+", 
+        "\[Epsilon]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Min", "[", 
+         RowBox[{"data", "[", 
+          RowBox[{"[", 
+           RowBox[{"All", ",", "2"}], "]"}], "]"}], "]"}], "-", "\[Delta]"}], 
+       ",", 
+       RowBox[{
+        RowBox[{"Max", "[", 
+         RowBox[{"data", "[", 
+          RowBox[{"[", 
+           RowBox[{"All", ",", "2"}], "]"}], "]"}], "]"}], "+", 
+        "\[Delta]"}]}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"ScrapeXY", "[", "x_", "]"}], ":=", 
+   RowBox[{"Partition", "[", 
+    RowBox[{
+     RowBox[{"Flatten", "[", 
+      RowBox[{"Cases", "[", 
+       RowBox[{"x", ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"_", "?", "NumberQ"}], ",", 
+          RowBox[{"_", "?", "NumberQ"}]}], "}"}], ",", "\[Infinity]"}], "]"}],
+       "]"}], ",", "2"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Options", "[", "DisplayMap", "]"}], "=", 
+   RowBox[{"Union", "[", 
+    RowBox[{
+     RowBox[{"Options", "[", "Graphics", "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"AspectRatio", "\[Rule]", "1"}], "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DisplayMap", "[", 
+    RowBox[{"graphics_", ",", 
+     RowBox[{"opts", ":", 
+      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+   RowBox[{"Show", "[", "\[IndentingNewLine]", 
+    RowBox[{"USMAP", ",", 
+     RowBox[{"Graphics", "[", "graphics", "]"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"PlotRange", "\[Rule]", 
+      RowBox[{"DRange", "[", 
+       RowBox[{
+        RowBox[{"ScrapeXY", "[", "graphics", "]"}], ",", "2", ",", "2"}], 
+       "]"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"FilterRules", "[", 
+      RowBox[{
+       RowBox[{"Flatten", "[", 
+        RowBox[{"{", "opts", "}"}], "]"}], ",", 
+       RowBox[{"Options", "[", "Plot", "]"}]}], "]"}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]}], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True,
+ CellChangeTimes->{{3.50004160496463*^9, 3.500041666353406*^9}, {
+   3.5000417479539337`*^9, 3.5000417487700663`*^9}, {3.5000421049194098`*^9, 
+   3.5000421106888533`*^9}, {3.500042195227892*^9, 3.500042195416595*^9}, {
+   3.500042263493319*^9, 3.500042281781543*^9}, {3.500042354670629*^9, 
+   3.5000423548045197`*^9}, {3.5000423939594517`*^9, 3.500042414997552*^9}, {
+   3.500044615431902*^9, 3.500044615606122*^9}, {3.500044648560582*^9, 
+   3.500044695329009*^9}, {3.500045391054047*^9, 3.500045434923592*^9}, {
+   3.500045949187524*^9, 3.500045950825027*^9}, {3.500045997333716*^9, 
+   3.500046031599503*^9}, {3.500046278790492*^9, 3.500046322048465*^9}, {
+   3.500046413923605*^9, 3.500046441275546*^9}, {3.5000464886647177`*^9, 
+   3.500046539385187*^9}, {3.500046656139043*^9, 3.50004667938103*^9}, {
+   3.500046748992784*^9, 3.5000467673687696`*^9}, {3.500046887154462*^9, 
+   3.500046937826872*^9}, {3.50004705889578*^9, 3.500047103277834*^9}, {
+   3.50004715044977*^9, 3.50004717754275*^9}, {3.500047224201079*^9, 
+   3.500047262980844*^9}, {3.5000473985673637`*^9, 3.5000474403256407`*^9}, {
+   3.500047484144*^9, 3.500047490429265*^9}, {3.50004821196093*^9, 
+   3.500048220718351*^9}, {3.500048361786065*^9, 3.500048372313632*^9}, {
+   3.5000484404366827`*^9, 3.500048452147957*^9}, {3.500049806834361*^9, 
+   3.500049815929541*^9}, {3.5000556688484383`*^9, 3.50005567000865*^9}, {
+   3.5000557176569147`*^9, 3.50005572548691*^9}, {3.500058909314694*^9, 
+   3.5000589795072203`*^9}, {3.500059011929916*^9, 3.500059012992352*^9}, {
+   3.500064362207747*^9, 3.500064362676407*^9}, {3.500065975541798*^9, 
+   3.5000659925278063`*^9}, {3.500066123519443*^9, 3.500066127554027*^9}, {
+   3.5000720447991333`*^9, 3.500072052624662*^9}, {3.501021729085012*^9, 
+   3.501021731535655*^9}, 3.501267209150316*^9, {3.5012698748760653`*^9, 
+   3.5012698757464743`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Examples", "Subtitle",
+ CellChangeTimes->{{3.50006589862142*^9, 3.500065899532278*^9}, 
+   3.501017532744166*^9}],
+
+Cell[CellGroupData[{
+
+Cell["Finding data", "Subsubsection",
+ CellChangeTimes->{{3.501020767809279*^9, 3.501020777111004*^9}}],
+
+Cell[TextData[{
+ "The primary use of this program is to query ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " for certain zip code and city data. For example, we can find all the zip \
+code regions in Washington, DC:"
+}], "Text",
+ CellChangeTimes->{{3.501020780391189*^9, 3.5010207807029057`*^9}, {
+  3.5010209314887123`*^9, 3.501020988935553*^9}}],
+
+Cell[BoxData[
+ RowBox[{"StateSelect", "[", "\"\<DC\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.5010209685956793`*^9, 3.501020983200262*^9}}],
+
+Cell["\<\
+The data returned is a list of 5-tuples of the form {STATE, ZIPCODE, \
+POPULATION, LONGITUDE, LATITUDE}.
+Alternatively, we can select the cities within a state:\
+\>", "Text",
+ CellChangeTimes->{{3.501021002966991*^9, 3.501021066222911*^9}, {
+  3.501021109696217*^9, 3.501021110535489*^9}}],
+
+Cell[BoxData[
+ RowBox[{"StateSelect", "[", 
+  RowBox[{"\"\<RI\>\"", ",", "CityDat"}], "]"}]], "Input",
+ CellChangeTimes->{{3.5010210698957443`*^9, 3.5010210844841747`*^9}}],
+
+Cell[TextData[{
+ "The data is a list of 5-tuples of the form {STATE, CITY, POPULATION, \
+LONGITUDE, LATITUDE}. \n\n",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " has powerful list processing tools that will allow the user to select \
+appropriate data from these sets. We will also see some other basic functions \
+throughout this document."
+}], "Text",
+ CellChangeTimes->{{3.501021099952723*^9, 3.501021113879285*^9}, {
+   3.50102179372432*^9, 3.501021821302917*^9}, {3.501021882128677*^9, 
+   3.501021975518901*^9}, 3.501022211832089*^9, 3.5012660686650257`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Distances", "Subsubsection",
+ CellChangeTimes->{{3.501266074760694*^9, 3.5012660757677717`*^9}}],
+
+Cell["\<\
+An implementation of the Great Circle Distance allows us to find distance \
+between cities:\
+\>", "Text",
+ CellChangeTimes->{{3.5012660808397284`*^9, 3.501266099030839*^9}}],
+
+Cell[BoxData[
+ RowBox[{"cities", "=", 
+  RowBox[{"CityToXY", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"\"\<Raleigh\>\"", ",", "\"\<NC\>\""}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\"\<Durham\>\"", ",", "\"\<NC\>\""}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\"\<Chapel Hill\>\"", ",", "\"\<NC\>\""}], "}"}]}], "}"}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{3.501266104722754*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Distance", "[", 
+   RowBox[{"cities", ",", "cities"}], "]"}], "//", "MatrixForm"}]], "Input",
+ CellChangeTimes->{{3.501266106525406*^9, 3.501266152958767*^9}, {
+  3.50126629742208*^9, 3.50126633741628*^9}, {3.501266421399393*^9, 
+  3.501266428324942*^9}, {3.501266582631769*^9, 3.501266585303277*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Making maps.", "Subsubsection",
+ CellChangeTimes->{{3.501022225543386*^9, 3.501022233750888*^9}}],
+
+Cell["\<\
+The most powerful tool is the DisplayMap function. It operates identically to \
+the Graphics[] function, but it plots the points on top of a map of the \
+United States. Say, for example, I want to plot New York City on a map. We \
+can grab the coordinates for NYC :\
+\>", "Text",
+ CellChangeTimes->{3.5010222209674788`*^9}],
+
+Cell[BoxData[
+ RowBox[{"NYC", "=", 
+  RowBox[{"CityToXY", "[", 
+   RowBox[{"\"\<New York\>\"", ",", "\"\<NY\>\""}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.501021978105958*^9, 3.501021996048184*^9}, {
+  3.5010220658167562`*^9, 3.501022066384139*^9}}],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " uses the Point[] graphics primative to show a point. We could show the \
+point ",
+ "{-73.9179, 40.7042}:"
+}], "Text",
+ CellChangeTimes->{{3.501022026646994*^9, 3.5010220573367043`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Graphics", "[", 
+  RowBox[{"Point", "[", "NYC", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.501022058610256*^9, 3.5010220630925407`*^9}}],
+
+Cell["\<\
+This is not interesting until we plot it on a US map. Notice the notation is \
+identical to the Graphics[] function:\
+\>", "Text",
+ CellChangeTimes->{{3.501022072200362*^9, 3.501022097190714*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DisplayMap", "[", 
+  RowBox[{"Point", "[", "NYC", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.50102209870496*^9, 3.501022105095026*^9}}],
+
+Cell["\<\
+The implementation of DisplayMap[] allows us to use the standard options \
+offered by Graphics[]:\
+\>", "Text",
+ CellChangeTimes->{{3.5010221308227243`*^9, 3.501022150534728*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DisplayMap", "[", 
+  RowBox[{"{", 
+   RowBox[{"Pink", ",", 
+    RowBox[{"PointSize", "[", "Large", "]"}], ",", 
+    RowBox[{"Point", "[", "NYC", "]"}]}], "}"}], "]"}]], "Input",
+ CellChangeTimes->{{3.501022151730097*^9, 3.5010221710001583`*^9}, {
+  3.501265236202902*^9, 3.5012652366747704`*^9}}],
+
+Cell[TextData[{
+ "Like Graphics[], we can combine our various functions with other ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " graphics primitives. "
+}], "Text",
+ CellChangeTimes->{
+  3.501022204672504*^9, {3.501022248347686*^9, 3.501022265079564*^9}, {
+   3.501265247070747*^9, 3.501265250174171*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DisplayMap", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"{", "\[IndentingNewLine]", 
+    RowBox[{"Red", ",", "\[IndentingNewLine]", 
+     RowBox[{"Point", "[", 
+      RowBox[{"DataToXY", "[", 
+       RowBox[{"StateSelect", "[", 
+        RowBox[{"\"\<MI\>\"", ",", "CityDat"}], "]"}], "]"}], "]"}], ",", 
+     "\[IndentingNewLine]", "Green", ",", "\[IndentingNewLine]", 
+     RowBox[{"Point", "[", 
+      RowBox[{"DataToXY", "[", 
+       RowBox[{"StateSelect", "[", 
+        RowBox[{"\"\<WV\>\"", ",", "CityDat"}], "]"}], "]"}], "]"}], ",", 
+     "Red", ",", 
+     RowBox[{"PointSize", "[", "Large", "]"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"Line", "[", 
+      RowBox[{"DataToXY", "[", 
+       RowBox[{"CitySelect", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"\"\<Asheville\>\"", ",", "\"\<NC\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"\"\<Raleigh\>\"", ",", "\"\<NC\>\""}], "}"}]}], "}"}], 
+        "]"}], "]"}], "]"}], ",", "\[IndentingNewLine]", "Yellow", ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Point", "[", 
+      RowBox[{"DataToXY", "[", 
+       RowBox[{"CitySelect", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"\"\<Asheville\>\"", ",", "\"\<NC\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"\"\<Raleigh\>\"", ",", "\"\<NC\>\""}], "}"}]}], "}"}], 
+        "]"}], "]"}], "]"}], ",", "\[IndentingNewLine]", "Green", ",", 
+     RowBox[{"Opacity", "[", ".1", "]"}], ",", 
+     RowBox[{"EdgeForm", "[", 
+      RowBox[{"Directive", "[", 
+       RowBox[{"Thick", ",", "Dashed", ",", "Blue"}], "]"}], "]"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Rectangle", "@@", 
+      RowBox[{"Transpose", "[", 
+       RowBox[{"DRange", "[", 
+        RowBox[{
+         RowBox[{"DataToXY", "[", 
+          RowBox[{"StateSelect", "[", "\"\<WV\>\"", "]"}], "]"}], ",", "0", 
+         ",", "0"}], "]"}], "]"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+   RowBox[{"Frame", "\[Rule]", "True"}]}], "\[IndentingNewLine]", 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.5000448754284887`*^9, 3.5000450070424967`*^9}, {
+   3.50004504229895*^9, 3.50004504510446*^9}, {3.5000452358139772`*^9, 
+   3.500045255293091*^9}, {3.500045358375371*^9, 3.5000453629405622`*^9}, {
+   3.500045463288753*^9, 3.5000455012748547`*^9}, {3.500045640875535*^9, 
+   3.500045699802322*^9}, 3.5000459642101583`*^9, {3.500046039138631*^9, 
+   3.500046043527719*^9}, {3.500046452046329*^9, 3.50004645876908*^9}, {
+   3.500046548114243*^9, 3.5000465514014997`*^9}, {3.500046686579484*^9, 
+   3.500046693352007*^9}, {3.500046808651923*^9, 3.500046827642375*^9}, {
+   3.500046863115584*^9, 3.500046866130563*^9}, {3.500046949206452*^9, 
+   3.500046976685419*^9}, {3.50004704459953*^9, 3.500047049254582*^9}, {
+   3.500047207482564*^9, 3.500047213114402*^9}, {3.500047429261901*^9, 
+   3.500047429779539*^9}, {3.500047503023212*^9, 3.5000475320782146`*^9}, {
+   3.500047580041555*^9, 3.5000476382642*^9}, {3.5000479426155367`*^9, 
+   3.500048028878262*^9}, {3.5000482250195923`*^9, 3.5000482264333143`*^9}, {
+   3.50005569240827*^9, 3.500055704925757*^9}, 3.500056149699608*^9, {
+   3.5000582876591463`*^9, 3.50005834363437*^9}, {3.500058374254313*^9, 
+   3.500058375513771*^9}, {3.500058598880171*^9, 3.500058673838797*^9}, {
+   3.5000587261361237`*^9, 3.500058738454227*^9}, 3.5000587789964867`*^9, {
+   3.500059038522645*^9, 3.5000590434885473`*^9}, {3.500060845482798*^9, 
+   3.500060862624633*^9}, {3.500066561855571*^9, 3.50006656213722*^9}, 
+   3.501017532776897*^9, {3.501020740062499*^9, 3.5010207525404463`*^9}, {
+   3.501022287404729*^9, 3.5010222895642147`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["City data and zip code data", "Subsubsection",
+ CellChangeTimes->{{3.5010185401938047`*^9, 3.50101854792772*^9}}],
+
+Cell["\<\
+Here we demonstrate the difference between the city data and zipcode data. \
+The black points are the cities in West Virginia while the red dots are the \
+zip codes. \
+\>", "Text",
+ CellChangeTimes->{{3.501018551216955*^9, 3.5010186040794477`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"wvzips", "=", 
+   RowBox[{"DataToXY", "[", 
+    RowBox[{"StateSelect", "[", "\"\<WV\>\"", "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"wvcity", "=", 
+   RowBox[{"DataToXY", "[", 
+    RowBox[{"StateSelect", "[", 
+     RowBox[{"\"\<WV\>\"", ",", "CityDat"}], "]"}], "]"}]}], ";"}]}], "Input",\
+
+ CellChangeTimes->{{3.5000590501465178`*^9, 3.5000590599762783`*^9}, {
+   3.500059212336635*^9, 3.5000592282281523`*^9}, {3.500059263474696*^9, 
+   3.500059271971024*^9}, {3.5000593116586237`*^9, 3.5000593157050734`*^9}, {
+   3.5000605588783817`*^9, 3.500060598131427*^9}, {3.500066562237298*^9, 
+   3.500066562303129*^9}, {3.5010173037480707`*^9, 3.5010173087937527`*^9}, {
+   3.5010173665960608`*^9, 3.501017428100915*^9}, 3.501017532792994*^9}],
+
+Cell[BoxData[
+ RowBox[{"DisplayMap", "[", 
+  RowBox[{"{", 
+   RowBox[{"Red", ",", 
+    RowBox[{"Point", "[", "wvzips", "]"}], ",", "Black", ",", 
+    RowBox[{"Point", "[", "wvcity", "]"}]}], "}"}], "]"}]], "Input",
+ CellChangeTimes->{{3.500059291514337*^9, 3.500059306268964*^9}, {
+   3.5000606060530643`*^9, 3.500060624323125*^9}, {3.500060747390473*^9, 
+   3.5000607510298567`*^9}, {3.50101719406812*^9, 3.5010172149373617`*^9}, {
+   3.50101733029165*^9, 3.501017335001459*^9}, {3.501017425027515*^9, 
+   3.501017425401334*^9}, 3.501017532794182*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Cities within a certain radius.", "Subsubsection",
+ CellChangeTimes->{{3.501018484506011*^9, 3.501018490440103*^9}}],
+
+Cell["\<\
+We can easily select the cities of population between 50,000 and 100,000 \
+within 50 miles of Los Angeles.\
+\>", "Text",
+ CellChangeTimes->{{3.501018221633423*^9, 3.501018257529591*^9}, {
+  3.501018498112364*^9, 3.501018501527897*^9}, {3.50101864246454*^9, 
+  3.5010186494719667`*^9}, {3.501265303923952*^9, 3.5012653053060627`*^9}, {
+  3.501268170630641*^9, 3.5012681711990137`*^9}, {3.501269562953944*^9, 
+  3.501269563016342*^9}}],
+
+Cell[BoxData[
+ RowBox[{"CityToXY", "[", 
+  RowBox[{"\"\<Los Angeles\>\"", ",", " ", "\"\<CA\>\""}], "]"}]], "Input",
+ CellChangeTimes->{3.501268174142695*^9}],
+
+Cell[BoxData[
+ RowBox[{"SelectNeighboringCities", "[", 
+  RowBox[{
+   RowBox[{"CityToXY", "[", 
+    RowBox[{"\"\<Los Angeles\>\"", ",", "\"\<CA\>\""}], "]"}], ",", "50", ",", 
+   RowBox[{"{", 
+    RowBox[{"50000", ",", "100000"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{
+  3.501018251155251*^9, {3.501018503697979*^9, 3.501018507185102*^9}, {
+   3.5012652887658253`*^9, 3.501265298504504*^9}, {3.501268149259138*^9, 
+   3.501268150008119*^9}, {3.501268183177465*^9, 3.50126819044589*^9}, {
+   3.501269565286599*^9, 3.501269565364908*^9}}],
+
+Cell["The coordinates of those cities:", "Text",
+ CellChangeTimes->{{3.501018261831835*^9, 3.5010182944016533`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DataToXY", "[", "%", "]"}]], "Input",
+ CellChangeTimes->{
+  3.501017532817132*^9, {3.501017668795637*^9, 3.501017682457779*^9}, {
+   3.501017753434313*^9, 3.501017754521428*^9}, {3.501017847547368*^9, 
+   3.5010179606101627`*^9}, {3.501018085893648*^9, 3.5010181028976107`*^9}, {
+   3.50101817074781*^9, 3.501018175809495*^9}, {3.5010182095446873`*^9, 
+   3.501018213897481*^9}, 3.501018247050254*^9, {3.501018279504936*^9, 
+   3.501018288124872*^9}}],
+
+Cell["Plot of those cities:", "Text",
+ CellChangeTimes->{{3.501018305648046*^9, 3.501018311407723*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DisplayMap", "[", 
+  RowBox[{"Point", "[", "%", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.5010183158189087`*^9, 3.501018320141314*^9}, 
+   3.501269583811734*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Cities in population range and traveling salesman problem.", \
+"Subsubsection",
+ CellChangeTimes->{{3.5010205080169067`*^9, 3.5010205272712717`*^9}}],
+
+Cell["\<\
+We can also select all the cities in a certain population range:\
+\>", "Text",
+ CellChangeTimes->{{3.501018655199646*^9, 3.501018672103655*^9}, {
+  3.501019253538713*^9, 3.5010192565552893`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{"PopulationRange", "[", 
+  RowBox[{"{", 
+   RowBox[{"500000", ",", "\[Infinity]"}], "}"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pts", "=", 
+   RowBox[{"DataToXY", "[", "%", "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.501019171635268*^9, 3.501019178056748*^9}, {
+  3.501019217979733*^9, 3.501019247009351*^9}, {3.501019554715067*^9, 
+  3.5010195909369707`*^9}}],
+
+Cell[TextData[{
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "'s built in tools allow us to find the shortest tour through the points:"
+}], "Text",
+ CellChangeTimes->{{3.501019286815423*^9, 3.501019299111351*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"{", 
+   RowBox[{"dist", ",", "tour"}], "}"}], "=", 
+  RowBox[{"FindShortestTour", "[", 
+   RowBox[{"pts", ",", 
+    RowBox[{"DistanceFunction", "\[Rule]", "Distance"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.501019300982451*^9, 3.5010193121845303`*^9}, {
+  3.501019368050664*^9, 3.501019369808531*^9}, {3.501019458272753*^9, 
+  3.501019462824686*^9}, {3.5010195168026133`*^9, 3.501019521232525*^9}}],
+
+Cell["And plot the tour:", "Text",
+ CellChangeTimes->{{3.501019321929047*^9, 3.501019323111238*^9}, {
+  3.501019353688324*^9, 3.501019354639323*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DisplayMap", "[", 
+  RowBox[{"{", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"PointSize", "[", "Medium", "]"}], ",", "Thick", ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Line", "[", "\[IndentingNewLine]", 
+     RowBox[{"Append", "[", 
+      RowBox[{
+       RowBox[{"pts", "[", 
+        RowBox[{"[", "tour", "]"}], "]"}], ",", 
+       RowBox[{"pts", "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}], "]"}], "\[IndentingNewLine]", "]"}],
+     ",", "\[IndentingNewLine]", "Magenta", ",", 
+    RowBox[{"PointSize", "[", "Large", "]"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"Point", "[", "pts", "]"}]}], "\[IndentingNewLine]", "}"}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.50006096236663*^9, 3.50006106589931*^9}, 
+   3.500066561590736*^9, 3.50101753274433*^9, {3.5010186805317497`*^9, 
+   3.5010186882411957`*^9}, {3.501018750795538*^9, 3.5010187692895107`*^9}, {
+   3.5010191576926327`*^9, 3.501019158745343*^9}, {3.501019534539166*^9, 
+   3.501019543737014*^9}, {3.5010196005871162`*^9, 3.5010196012729797`*^9}, {
+   3.5010198168252897`*^9, 3.501019839259763*^9}, {3.5010199191547117`*^9, 
+   3.501019920761969*^9}, {3.501270381346416*^9, 3.501270440822764*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->None,
+WindowToolbars->"EditBar",
+WindowSize->{1026, 772},
+WindowMargins->{{1, Automatic}, {Automatic, 1}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+ShowSelection->True,
+FrontEndVersion->"8.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (February 23, \
+2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[545, 20, 292, 6, 32, "Text"],
+Cell[840, 28, 143, 2, 27, "Input"],
+Cell[CellGroupData[{
+Cell[1008, 34, 230, 4, 26, "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[1241, 40, 714, 15, 27, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[1958, 57, 390, 10, 27, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[2351, 69, 635, 15, 27, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3023, 89, 210, 4, 26, "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ InitializationGroup->True],
+Cell[3236, 95, 268, 4, 26, "Text",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ InitializationGroup->True],
+Cell[3507, 101, 5030, 130, 193, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ InitializationGroup->True]
+}, Open  ]],
+Cell[8552, 234, 245, 5, 27, "Input"],
+Cell[8800, 241, 115, 1, 26, "Text"],
+Cell[8918, 244, 132, 2, 27, "Input"],
+Cell[9053, 248, 112, 1, 26, "Text"],
+Cell[9168, 251, 133, 2, 27, "Input"],
+Cell[CellGroupData[{
+Cell[9326, 257, 276, 4, 26, "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[9605, 263, 4232, 104, 178, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[13840, 369, 825, 21, 58, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[14668, 392, 1071, 27, 58, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[15742, 421, 2573, 70, 118, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18352, 496, 293, 5, 26, "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10002.},
+ InitializationGroup->True],
+Cell[18648, 503, 4254, 107, 103, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10002.},
+ InitializationGroup->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22939, 615, 223, 4, 26, "Subsubtitle",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True],
+Cell[23165, 621, 4544, 106, 133, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10001.},
+ InitializationGroup->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27746, 732, 119, 2, 46, "Subtitle"],
+Cell[CellGroupData[{
+Cell[27890, 738, 103, 1, 24, "Subsubsection"],
+Cell[27996, 741, 355, 8, 26, "Text"],
+Cell[28354, 751, 141, 2, 27, "Input"],
+Cell[28498, 755, 299, 6, 41, "Text"],
+Cell[28800, 763, 172, 3, 27, "Input"],
+Cell[28975, 768, 571, 11, 56, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29583, 784, 102, 1, 24, "Subsubsection"],
+Cell[29688, 787, 183, 4, 26, "Text"],
+Cell[29874, 793, 425, 12, 27, "Input"],
+Cell[30302, 807, 336, 6, 27, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30675, 818, 103, 1, 24, "Subsubsection"],
+Cell[30781, 821, 333, 6, 41, "Text"],
+Cell[31117, 829, 251, 5, 27, "Input"],
+Cell[31371, 836, 253, 7, 26, "Text"],
+Cell[31627, 845, 163, 3, 27, "Input"],
+Cell[31793, 850, 206, 4, 26, "Text"],
+Cell[32002, 856, 162, 3, 27, "Input"],
+Cell[32167, 861, 189, 4, 26, "Text"],
+Cell[32359, 867, 320, 7, 27, "Input"],
+Cell[32682, 876, 313, 8, 26, "Text"],
+Cell[32998, 886, 3704, 72, 208, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36739, 963, 119, 1, 24, "Subsubsection"],
+Cell[36861, 966, 258, 5, 26, "Text"],
+Cell[37122, 973, 802, 17, 43, "Input"],
+Cell[37927, 992, 552, 10, 27, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38516, 1007, 122, 1, 24, "Subsubsection"],
+Cell[38641, 1010, 443, 8, 26, "Text"],
+Cell[39087, 1020, 158, 3, 27, "Input"],
+Cell[39248, 1025, 544, 11, 27, "Input"],
+Cell[39795, 1038, 116, 1, 26, "Text"],
+Cell[39914, 1041, 475, 8, 27, "Input"],
+Cell[40392, 1051, 103, 1, 26, "Text"],
+Cell[40498, 1054, 189, 4, 27, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[40724, 1063, 155, 2, 24, "Subsubsection"],
+Cell[40882, 1067, 205, 4, 26, "Text"],
+Cell[41090, 1073, 407, 10, 43, "Input"],
+Cell[41500, 1085, 218, 5, 26, "Text"],
+Cell[41721, 1092, 438, 9, 27, "Input"],
+Cell[42162, 1103, 149, 2, 26, "Text"],
+Cell[42314, 1107, 1220, 23, 148, "Input"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
